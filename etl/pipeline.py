@@ -110,7 +110,7 @@ def transform_data() -> None:
     casted_column_df = clean_column(renamed_df)
 
     logger.info(
-        f"Combined {len(dfs)} files into {len(df_with_stats)} rows → {OUTPUT_FILE}"
+        f"Combined {len(dfs)} files into {len(casted_column_df)} rows → {OUTPUT_FILE}"
     )
 
 
