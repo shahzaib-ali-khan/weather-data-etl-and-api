@@ -5,10 +5,15 @@ description = "Weather app that contains ETL to scrap data from DWD Server and F
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "aiosqlite>=0.21.0",
     "beautifulsoup4>=4.14.2",
+    "dataclasses>=0.8",
     "fastapi>=0.121.0",
     "pandas>=2.3.3",
+    "psycopg2>=2.9.11",
+    "python-dotenv>=1.2.1",
     "requests>=2.32.5",
+    "sqlalchemy>=2.0.44",
     "structlog>=25.5.0",
 ]
 

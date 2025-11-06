@@ -7,9 +7,10 @@ import structlog
 from bs4 import BeautifulSoup
 
 from .api_client import DWDClient
-from .util import (calculate_stats, clean_column, download_files,
+from .database import create_db_engine
+from .util import (clean_column, download_files,
                    extract_station_id_from_second_row,
-                   filter_dataframe_columns, rename_columns)
+                   filter_dataframe_columns, rename_columns, stats_df)
 
 logger = structlog.get_logger(__name__)
 
@@ -52,7 +53,7 @@ def extract_data() -> None:
     download_files(SAVING_DIRECTORY, csv_links)
 
 
-def transform_data() -> None:
+def transform_data() -> pd.DataFrame:
     OUTPUT_FILE = SAVING_DIRECTORY / "combined_weather_data.csv"
     all_csv_files = list(SAVING_DIRECTORY.glob("*.csv"))
 
@@ -100,7 +101,7 @@ def transform_data() -> None:
     # --- Step 4: Combine all ---
     if not dfs:
         logger.warning("No valid data loaded from any file.")
-        return
+        exit(1)
 
     combined_df = pd.concat(dfs, ignore_index=True)
     filtered_dataframe = filter_dataframe_columns(rename_columns(combined_df))
@@ -110,12 +111,23 @@ def transform_data() -> None:
         f"Combined {len(dfs)} files into {len(casted_column_df)} rows → {OUTPUT_FILE}"
     )
 
+    return casted_column_df
 
-def load_data():
-    pass
+
+def load_data(df: pd.DataFrame) -> None:
+    db_engine = create_db_engine()
+
+    df.to_sql(
+        "temperature", con=db_engine, if_exists="append", index=False, chunksize=200
+    )
+
+    statistics_df = stats_df(df)
+    statistics_df.to_sql(
+        "temperature_stats", con=db_engine, if_exists="append", index=False
+    )
 
 
 def run_pipeline():
     extract_data()
-    transform_data()
-    load_data()
+    df = transform_data()
+    load_data(df)

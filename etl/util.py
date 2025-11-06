@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
@@ -66,7 +67,14 @@ def extract_station_id_from_second_row(csv_file: Path) -> Optional[str]:
 
 def filter_dataframe_columns(df: pd.DataFrame) -> pd.DataFrame:
     # Step 1: Define desired columns (exact names!)
-    desired_cols = ["station_id", "source_file", "datetime", "temprature", "date", "time_utc"]
+    desired_cols = [
+        "station_id",
+        "source_file",
+        "datetime",
+        "temperature",
+        "date",
+        "time_utc",
+    ]
 
     cols_to_keep = [col for col in desired_cols if col in df.columns]
 
@@ -76,7 +84,11 @@ def filter_dataframe_columns(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def rename_columns(df: pd.DataFrame) -> pd.DataFrame:
-    name_cols_mapping = {"Temperatur (2m)": "temprature", "Datum": "date", "Uhrzeit (UTC)": "time_utc"}
+    name_cols_mapping = {
+        "Temperatur (2m)": "temperature",
+        "Datum": "date",
+        "Uhrzeit (UTC)": "time_utc",
+    }
 
     renamed_df = df.rename(columns=name_cols_mapping, inplace=False)
 
@@ -84,7 +96,7 @@ def rename_columns(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def clean_column(df: pd.DataFrame) -> pd.DataFrame:
-    cols = ["temprature"]
+    cols = ["temperature"]
 
     for col in cols:
         df[col] = df[col].astype(str).str.replace(",", ".")
@@ -96,9 +108,12 @@ def clean_column(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def calculate_stats(df: pd.DataFrame) -> pd.DataFrame:
-    df["average"] = df["temprature"].mean()
-    df["min"] = df["temprature"].min()
-    df["max"] = df["temprature"].max()
+def stats_df(df: pd.DataFrame) -> pd.DataFrame:
+    stats = {
+        "date": datetime.today().strftime("%Y-%m-%d"),
+        "average": df["temperature"].astype(float).mean(),
+        "min": df["temperature"].astype(float).min(),
+        "max": df["temperature"].astype(float).max(),
+    }
 
-    return df
+    return pd.DataFrame([stats])
