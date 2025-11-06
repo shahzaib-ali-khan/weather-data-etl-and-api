@@ -14,6 +14,10 @@ class Temperature(Base):
     time_utc = Column(Time, nullable=False)
     datetime = Column(DateTime, nullable=False)
     temperature = Column(String, nullable=True)
+    pressure = Column(Float)
+    humidity = Column(Integer, nullable=True)
+    wind_speed = Column(Integer, nullable=True)
+    wind_direction = Column(Integer, nullable=True)
 
 
 class TemperatureStats(Base):

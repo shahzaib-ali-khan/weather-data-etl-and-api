@@ -74,6 +74,10 @@ def filter_dataframe_columns(df: pd.DataFrame) -> pd.DataFrame:
         "temperature",
         "date",
         "time_utc",
+        "wind_speed",
+        "wind_direction",
+        "humidity",
+        "pressure"
     ]
 
     cols_to_keep = [col for col in desired_cols if col in df.columns]
@@ -88,6 +92,10 @@ def rename_columns(df: pd.DataFrame) -> pd.DataFrame:
         "Temperatur (2m)": "temperature",
         "Datum": "date",
         "Uhrzeit (UTC)": "time_utc",
+        "Windrichtung": "wind_direction",
+        "Windgeschwindigkeit": "wind_speed",
+        "Relative Feuchte": "humidity",
+        "Druck (auf Meereshoehe)": "pressure"
     }
 
     renamed_df = df.rename(columns=name_cols_mapping, inplace=False)
@@ -96,7 +104,7 @@ def rename_columns(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def clean_column(df: pd.DataFrame) -> pd.DataFrame:
-    cols = ["temperature"]
+    cols = ["temperature", "pressure"]
 
     for col in cols:
         df[col] = df[col].astype(str).str.replace(",", ".")
