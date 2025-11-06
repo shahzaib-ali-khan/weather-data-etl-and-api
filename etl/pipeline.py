@@ -79,9 +79,6 @@ def transform_data() -> None:
                 logger.warning(f"Empty data in {csv_file.name} after skipping rows.")
                 continue
 
-            # Remove rows that has "--" which is representation of none
-            df = df[df["Taupunkttemperatur (2m)"].str.contains("---") == False]
-
             # --- Step 3: Add metadata ---
             df["station_id"] = station_id
             df["source_file"] = csv_file.name
@@ -106,8 +103,8 @@ def transform_data() -> None:
         return
 
     combined_df = pd.concat(dfs, ignore_index=True)
-    renamed_df = rename_columns(filter_dataframe_columns(combined_df))
-    casted_column_df = clean_column(renamed_df)
+    filtered_dataframe = filter_dataframe_columns(rename_columns(combined_df))
+    casted_column_df = clean_column(filtered_dataframe)
 
     logger.info(
         f"Combined {len(dfs)} files into {len(casted_column_df)} rows → {OUTPUT_FILE}"

@@ -66,7 +66,7 @@ def extract_station_id_from_second_row(csv_file: Path) -> Optional[str]:
 
 def filter_dataframe_columns(df: pd.DataFrame) -> pd.DataFrame:
     # Step 1: Define desired columns (exact names!)
-    desired_cols = ["station_id", "source_file", "datetime", "Temperatur (2m)"]
+    desired_cols = ["station_id", "source_file", "datetime", "temprature", "date", "time_utc"]
 
     cols_to_keep = [col for col in desired_cols if col in df.columns]
 
@@ -76,7 +76,7 @@ def filter_dataframe_columns(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def rename_columns(df: pd.DataFrame) -> pd.DataFrame:
-    name_cols_mapping = {"Temperatur (2m)": "temprature"}
+    name_cols_mapping = {"Temperatur (2m)": "temprature", "Datum": "date", "Uhrzeit (UTC)": "time_utc"}
 
     renamed_df = df.rename(columns=name_cols_mapping, inplace=False)
 
