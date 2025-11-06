@@ -77,7 +77,7 @@ def filter_dataframe_columns(df: pd.DataFrame) -> pd.DataFrame:
         "wind_speed",
         "wind_direction",
         "humidity",
-        "pressure"
+        "pressure",
     ]
 
     cols_to_keep = [col for col in desired_cols if col in df.columns]
@@ -95,7 +95,7 @@ def rename_columns(df: pd.DataFrame) -> pd.DataFrame:
         "Windrichtung": "wind_direction",
         "Windgeschwindigkeit": "wind_speed",
         "Relative Feuchte": "humidity",
-        "Druck (auf Meereshoehe)": "pressure"
+        "Druck (auf Meereshoehe)": "pressure",
     }
 
     renamed_df = df.rename(columns=name_cols_mapping, inplace=False)
