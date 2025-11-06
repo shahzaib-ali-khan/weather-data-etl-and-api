@@ -1,11 +1,7 @@
 import os
-
-from dotenv import load_dotenv
 from sqlalchemy import Engine, create_engine
 
 from .model import Base
-
-load_dotenv()
 
 
 def create_db_engine() -> Engine:
