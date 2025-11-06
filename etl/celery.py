@@ -1,6 +1,7 @@
+import os
+
 from celery import Celery
 from celery.schedules import crontab
-import os
 
 # Redis configuration
 REDIS_HOST = os.getenv("REDIS_HOST", "localhost")

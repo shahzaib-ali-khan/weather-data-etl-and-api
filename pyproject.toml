@@ -9,14 +9,17 @@ dependencies = [
     "beautifulsoup4>=4.14.2",
     "celery>=5.5.3",
     "dataclasses>=0.8",
-    "fastapi>=0.121.0",
+    "fastapi[standard]>=0.121.0",
     "pandas>=2.3.3",
     "psycopg2>=2.9.11",
+    "pydantic-settings>=2.11.0",
     "python-dotenv>=1.2.1",
     "redis>=7.0.1",
     "requests>=2.32.5",
+    "slowapi>=0.1.9",
     "sqlalchemy>=2.0.44",
     "structlog>=25.5.0",
+    "uvicorn>=0.38.0",
 ]
 
 [dependency-groups]
