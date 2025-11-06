@@ -1,13 +1,7 @@
-import uuid
-
 from sqlalchemy import Column, Date, DateTime, Float, Integer, String, Time
 from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
-
-
-def generate_uuid() -> str:
-    return str(uuid.uuid4())
 
 
 class Temperature(Base):
