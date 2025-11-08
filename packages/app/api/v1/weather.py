@@ -9,7 +9,7 @@ from packages.app.schemas.weather import WeatherListResponse, WeatherResponse, W
 from packages.app.services.weather import WeatherService
 
 router = APIRouter(prefix="/weather", tags=["Weather"])
-weather_filter_dep = Depends(FilterDepends(WeatherFilter))
+
 
 @router.get("/stations", response_model=Dict[str, List[str]], summary="Get station list")
 async def list_stations(
@@ -23,7 +23,7 @@ async def list_stations(
 async def today(
     station_id: str,
     weather_service: Annotated[WeatherService, Depends(get_weather_service)],
-    weather_filter: WeatherFilter = weather_filter_dep,
+    weather_filter: WeatherFilter = FilterDepends(WeatherFilter),
 ) -> WeatherListResponse:
     weather_data_list = await weather_service.get_todays_weather(station_id, weather_filter)
 
