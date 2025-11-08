@@ -9,7 +9,7 @@ This ETL pipeline fetches weather data from the German Weather Service (DWD), pr
 - PostgreSQL database
 - uv package manager
 - Environment variables:
-  - `DATABASE_URL`: Database connection string
+  - `ETL_DATABASE_URL`: Database connection string
   - `REDIS_HOST`: Redis host (default: localhost)
   - `REDIS_PORT`: Redis port (default: 6379)
   - `REDIS_DB`: Redis database number (default: 0)
