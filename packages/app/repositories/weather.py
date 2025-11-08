@@ -1,7 +1,7 @@
 from datetime import date
 from typing import Optional
 
-from sqlalchemy import select, distinct, and_
+from sqlalchemy import and_, distinct, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from packages.app.api.v1.filters.weather import WeatherFilter
@@ -20,14 +20,7 @@ class WeatherRepository:
     async def get_todays_weather(self, station_id: str, weather_filter: Optional[WeatherFilter] = None) -> list[Weather]:
         today = date.today()
         statement = (
-            select(Weather)
-            .where(
-                and_(
-                    Weather.date == today,
-                    Weather.station_id == station_id
-                )
-            )
-            .order_by(Weather.time_utc)
+            select(Weather).where(and_(Weather.date == today, Weather.station_id == station_id)).order_by(Weather.time_utc)
         )
 
         if weather_filter:
@@ -40,9 +33,7 @@ class WeatherRepository:
     async def get_todays_stats(self) -> list[WeatherStats]:
         today = date.today()
 
-        statement = select(WeatherStats).where(
-            and_(WeatherStats.date == today)
-        ).order_by(WeatherStats.station_id)
+        statement = select(WeatherStats).where(and_(WeatherStats.date == today)).order_by(WeatherStats.station_id)
 
         result = await self.session.execute(statement)
 

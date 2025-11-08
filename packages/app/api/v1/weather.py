@@ -1,12 +1,13 @@
-from typing import Annotated, List, Dict
+from typing import Annotated, Dict, List
 
 from fastapi import APIRouter, Depends
 from fastapi_filter import FilterDepends
 
 from packages.app.api.dependencies.weather import get_weather_service
 from packages.app.api.v1.filters.weather import WeatherFilter
-from packages.app.schemas.weather import WeatherResponse, WeatherStatsResponse, WeatherListResponse, \
-    WeatherStatsListResponse
+from packages.app.schemas.weather import (WeatherListResponse, WeatherResponse,
+                                          WeatherStatsListResponse,
+                                          WeatherStatsResponse)
 from packages.app.services.weather import WeatherService
 
 router = APIRouter(prefix="/weather", tags=["Weather"])
@@ -45,21 +46,16 @@ async def today(
     return WeatherListResponse(result=weather_data)
 
 
-@router.get(
-    "/today/stats",
-    response_model=WeatherStatsListResponse,
-    summary="Get today's weather stats per station"
-)
+@router.get("/today/stats", response_model=WeatherStatsListResponse, summary="Get today's weather stats per station")
 async def today_stats(
     weather_service: Annotated[WeatherService, Depends(get_weather_service)],
 ) -> WeatherStatsListResponse:
     stats_list = await weather_service.get_todays_weather_stats()
-    return WeatherStatsListResponse(result=[
-        WeatherStatsResponse(
-            station_id=stat.station_id,
-            date=stat.date,
-            average=stat.average,
-            min=stat.min,
-            max=stat.max
-        ) for stat in stats_list
-    ])
+    return WeatherStatsListResponse(
+        result=[
+            WeatherStatsResponse(
+                station_id=stat.station_id, date=stat.date, average=stat.average, min=stat.min, max=stat.max
+            )
+            for stat in stats_list
+        ]
+    )

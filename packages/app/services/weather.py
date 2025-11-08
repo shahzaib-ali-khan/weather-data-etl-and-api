@@ -4,7 +4,8 @@ import structlog
 
 from packages.app.api.v1.filters.weather import WeatherFilter
 from packages.app.repositories.weather import WeatherRepository
-from packages.app.schemas.weather import WeatherStatsResponse, WeatherListResponse
+from packages.app.schemas.weather import (WeatherListResponse,
+                                          WeatherStatsResponse)
 from packages.etl.model import Weather, WeatherStats
 
 logger = structlog.get_logger(__name__)

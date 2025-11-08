@@ -36,9 +36,7 @@ def create_application() -> FastAPI:
 
     # Rate limiting
     application.state.limiter = limiter
-    application.add_exception_handler(
-        RateLimitExceeded, cast(ExceptionHandler, _rate_limit_exceeded_handler)
-    )
+    application.add_exception_handler(RateLimitExceeded, cast(ExceptionHandler, _rate_limit_exceeded_handler))
     application.add_middleware(SlowAPIMiddleware)
 
     # Include API routers

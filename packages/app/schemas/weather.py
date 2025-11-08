@@ -1,6 +1,8 @@
 from datetime import date, time
 from typing import Optional
+
 from pydantic import BaseModel, field_validator
+
 
 class WeatherResponse(BaseModel):
     station_id: Optional[str] = None
@@ -12,20 +14,17 @@ class WeatherResponse(BaseModel):
     wind_speed: Optional[float] = None
     wind_direction: Optional[int] = None
 
-    @field_validator('date', mode='before')
+    @field_validator("date", mode="before")
     @classmethod
     def validate_date(cls, v):
-        if v in (None, '', '---'):
+        if v in (None, "", "---"):
             return None
         return v
 
-    @field_validator(
-        'temperature', 'pressure', 'humidity', 'wind_speed', 'wind_direction',
-        mode='before'
-    )
+    @field_validator("temperature", "pressure", "humidity", "wind_speed", "wind_direction", mode="before")
     @classmethod
     def validate_measurement(cls, v):
-        if v in ('---', '', None):
+        if v in ("---", "", None):
             return None
         return v
 
@@ -46,6 +45,7 @@ class WeatherStatsResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
 
 class WeatherStatsListResponse(BaseModel):
     result: list[WeatherStatsResponse]

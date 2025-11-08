@@ -23,9 +23,7 @@ class DatabaseManager:
                 settings.APP_DATABASE_URL,
                 echo=settings.DEBUG,
                 future=True,
-                connect_args={"check_same_thread": False}
-                if "sqlite" in settings.APP_DATABASE_URL
-                else {},
+                connect_args={"check_same_thread": False} if "sqlite" in settings.APP_DATABASE_URL else {},
             )
 
             self.async_session_maker = async_sessionmaker(
