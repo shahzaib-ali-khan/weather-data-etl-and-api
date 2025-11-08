@@ -8,7 +8,7 @@ from .pipeline import run_pipeline
 logger = structlog.get_logger()
 
 
-def main():
+def main() -> None:
     logger.info(f"Pipeline started at {datetime.now()}")
     init_db()
     run_pipeline()

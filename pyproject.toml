@@ -25,3 +25,4 @@ dev = [
 
 [tool.ruff]
 line-length = 125
+lint.select = ["E", "F", "I", "B", "ANN"]

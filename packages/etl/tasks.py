@@ -7,6 +7,6 @@ logger = structlog.get_logger()
 
 
 @app.task
-def run_pipeline_task():
+def run_pipeline_task() -> None:
     logger.info("Celery task triggered")
     main()

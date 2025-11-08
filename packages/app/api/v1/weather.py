@@ -5,13 +5,11 @@ from fastapi_filter import FilterDepends
 
 from packages.app.api.dependencies.weather import get_weather_service
 from packages.app.api.v1.filters.weather import WeatherFilter
-from packages.app.schemas.weather import (WeatherListResponse, WeatherResponse,
-                                          WeatherStatsListResponse,
-                                          WeatherStatsResponse)
+from packages.app.schemas.weather import WeatherListResponse, WeatherResponse, WeatherStatsListResponse, WeatherStatsResponse
 from packages.app.services.weather import WeatherService
 
 router = APIRouter(prefix="/weather", tags=["Weather"])
-
+weather_filter_dep = Depends(FilterDepends(WeatherFilter))
 
 @router.get("/stations", response_model=Dict[str, List[str]], summary="Get station list")
 async def list_stations(
@@ -25,7 +23,7 @@ async def list_stations(
 async def today(
     station_id: str,
     weather_service: Annotated[WeatherService, Depends(get_weather_service)],
-    weather_filter: WeatherFilter = FilterDepends(WeatherFilter),
+    weather_filter: WeatherFilter = weather_filter_dep,
 ) -> WeatherListResponse:
     weather_data_list = await weather_service.get_todays_weather(station_id, weather_filter)
 

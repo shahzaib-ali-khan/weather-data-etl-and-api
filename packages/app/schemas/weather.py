@@ -1,5 +1,5 @@
 from datetime import date, time
-from typing import Optional
+from typing import Optional, Union
 
 from pydantic import BaseModel, field_validator
 
@@ -16,14 +16,14 @@ class WeatherResponse(BaseModel):
 
     @field_validator("date", mode="before")
     @classmethod
-    def validate_date(cls, v):
+    def validate_date(cls, v: Union[date, None]) -> Union[date, None]:
         if v in (None, "", "---"):
             return None
         return v
 
     @field_validator("temperature", "pressure", "humidity", "wind_speed", "wind_direction", mode="before")
     @classmethod
-    def validate_measurement(cls, v):
+    def validate_measurement(cls, v: Union[int, float, None]) -> Union[int, float, None]:
         if v in ("---", "", None):
             return None
         return v

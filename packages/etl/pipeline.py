@@ -9,9 +9,14 @@ from bs4 import BeautifulSoup
 
 from .api_client import DWDClient
 from .database import create_db_engine
-from .util import (clean_column, download_files,
-                   extract_station_id_from_second_row,
-                   filter_dataframe_columns, rename_columns, stats_df)
+from .util import (
+    clean_column,
+    download_files,
+    extract_station_id_from_second_row,
+    filter_dataframe_columns,
+    rename_columns,
+    stats_df,
+)
 
 logger = structlog.get_logger(__name__)
 
@@ -118,7 +123,7 @@ def load_data(df: pd.DataFrame) -> None:
     statistics_df.to_sql("weather_stats", con=db_engine, if_exists="append", index=False)
 
 
-def run_pipeline():
+def run_pipeline() -> None:
     extract_data()
     df = transform_data()
     load_data(df)
