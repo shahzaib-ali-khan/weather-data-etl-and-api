@@ -21,8 +21,8 @@ def create_application() -> FastAPI:
         title=settings.APP_NAME,
         description="FastAPI application with JWT authentication",
         version="1.0.0",
-        docs_url="/docs",
-        redoc_url="/redoc",
+        docs_url="/api/v1/docs",
+        redoc_url="/api/v1/redoc",
     )
 
     # Configure CORS
