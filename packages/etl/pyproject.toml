@@ -1,0 +1,12 @@
+[project]
+name = "weather-etl"
+version = "0.1.0"
+description = "ETL Pipeline for German Weather Service (DWD) data"
+requires-python = ">=3.13"
+dependencies = [
+    "celery",
+    "pandas",
+    "redis",
+    "requests",
+    "beautifulsoup4"
+]
