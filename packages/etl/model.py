@@ -24,6 +24,7 @@ class WeatherStats(Base):
     __tablename__ = "weather_stats"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
+    station_id = Column(String, nullable=False)
     date = Column(Date, nullable=False)
     average = Column(Float, nullable=False)
     min = Column(Float, nullable=False)

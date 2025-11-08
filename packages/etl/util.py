@@ -49,9 +49,7 @@ def extract_station_id_from_second_row(csv_file: Path) -> Optional[str]:
     station_id = None
     try:
         # Read only first 0th column
-        df_preview = pd.read_csv(
-            csv_file, sep=";", encoding="latin1", nrows=2, header=None, usecols=[0]
-        )
+        df_preview = pd.read_csv(csv_file, sep=";", encoding="latin1", nrows=2, header=None, usecols=[0])
         station_id = df_preview.iloc[1, 0].strip()
 
         if station_id:
@@ -114,17 +112,18 @@ def clean_column(df: pd.DataFrame) -> pd.DataFrame:
         df[col] = pd.to_numeric(df[col], errors="coerce")
 
     # Convert date to ISO format YYYY-MM-DD
-    df['date'] = pd.to_datetime(df['date'], format='%d.%m.%y').dt.strftime('%Y-%m-%d')
-   
+    df["date"] = pd.to_datetime(df["date"], format="%d.%m.%y").dt.strftime("%Y-%m-%d")
+
     return df
 
 
 def stats_df(df: pd.DataFrame) -> pd.DataFrame:
-    stats = {
-        "date": datetime.today().strftime("%Y-%m-%d"),
-        "average": df["temperature"].astype(float).mean(),
-        "min": df["temperature"].astype(float).min(),
-        "max": df["temperature"].astype(float).max(),
-    }
+    """Calculate daily statistics per station."""
+    stats = df.groupby(["station_id", "date"]).agg({"temperature": ["mean", "min", "max"]}).reset_index()
 
-    return pd.DataFrame([stats])
+    stats.columns = ["station_id", "date", "average", "min", "max"]
+
+    # Drop rows where all stats are NaN
+    stats = stats.dropna(subset=["average", "min", "max"], how="all")
+
+    return stats

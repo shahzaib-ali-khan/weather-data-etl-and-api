@@ -1,11 +1,11 @@
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import urljoin
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 import structlog
 from bs4 import BeautifulSoup
-from zoneinfo import ZoneInfo
 
 from .api_client import DWDClient
 from .database import create_db_engine
@@ -16,12 +16,8 @@ from .util import (clean_column, download_files,
 logger = structlog.get_logger(__name__)
 
 
-
 SAVING_DIRECTORY = (
-    Path(__file__).parent
-    / "data"
-    / "dwd_csv_files"
-    / datetime.now(tz=ZoneInfo("Europe/Berlin")).strftime("%Y-%m-%d")
+    Path(__file__).parent / "data" / "dwd_csv_files" / datetime.now(tz=ZoneInfo("Europe/Berlin")).strftime("%Y-%m-%d")
 )
 
 
@@ -46,9 +42,7 @@ def extract_data() -> None:
 
     # Step 5: Filter only CSV or CSV.GZ files
     csv_links = [
-        urljoin(base_url, link.get("href"))
-        for link in links
-        if link.get("href") and link.get("href").endswith(".csv")
+        urljoin(base_url, link.get("href")) for link in links if link.get("href") and link.get("href").endswith(".csv")
     ]
     logger.info(f"Found {len(csv_links)} CSV files")
 
@@ -93,9 +87,7 @@ def transform_data() -> pd.DataFrame:
             )
 
             dfs.append(df)
-            logger.info(
-                f"Loaded {csv_file.name} | {len(df)} rows | station_id: {station_id}"
-            )
+            logger.info(f"Loaded {csv_file.name} | {len(df)} rows | station_id: {station_id}")
 
         except Exception as e:
             logger.error(f"Failed to process {csv_file.name}: {e}", exc_info=True)
@@ -109,9 +101,10 @@ def transform_data() -> pd.DataFrame:
     filtered_dataframe = filter_dataframe_columns(rename_columns(combined_df))
     casted_column_df = clean_column(filtered_dataframe)
 
-    logger.info(
-        f"Combined {len(dfs)} files into {len(casted_column_df)} rows → {OUTPUT_FILE}"
-    )
+    # Drop rows that does not have temperature
+    casted_column_df.dropna(subset=["temperature"], inplace=True)
+
+    logger.info(f"Combined {len(dfs)} files into {len(casted_column_df)} rows → {OUTPUT_FILE}")
 
     return casted_column_df
 
@@ -119,14 +112,10 @@ def transform_data() -> pd.DataFrame:
 def load_data(df: pd.DataFrame) -> None:
     db_engine = create_db_engine()
 
-    df.to_sql(
-        "weather", con=db_engine, if_exists="append", index=False, chunksize=200
-    )
+    df.to_sql("weather", con=db_engine, if_exists="append", index=False, chunksize=200)
 
     statistics_df = stats_df(df)
-    statistics_df.to_sql(
-        "weather_stats", con=db_engine, if_exists="append", index=False
-    )
+    statistics_df.to_sql("weather_stats", con=db_engine, if_exists="append", index=False)
 
 
 def run_pipeline():
