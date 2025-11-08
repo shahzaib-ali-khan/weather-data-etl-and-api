@@ -1,7 +1,10 @@
 from datetime import date
-from sqlalchemy import select, distinct
+from typing import Optional
+
+from sqlalchemy import select, distinct, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from packages.app.api.v1.filters.weather import WeatherFilter
 from packages.etl.model import Weather, WeatherStats
 
 
@@ -14,22 +17,33 @@ class WeatherRepository:
         result = await self.session.execute(stmt)
         return [row[0] for row in result.all()]
 
-    async def get_todays_weather(self, station_id: str) -> list[Weather]:
+    async def get_todays_weather(self, station_id: str, weather_filter: Optional[WeatherFilter] = None) -> list[Weather]:
         today = date.today()
-        stmt = (
+        statement = (
             select(Weather)
-            .where(Weather.date == today, Weather.station_id == station_id)
+            .where(
+                and_(
+                    Weather.date == today,
+                    Weather.station_id == station_id
+                )
+            )
             .order_by(Weather.time_utc)
         )
-        result = await self.session.execute(stmt)
-        return result.scalars().all()
+
+        if weather_filter:
+            statement = weather_filter.filter(statement)
+
+        result = await self.session.execute(statement)
+
+        return list(result.scalars().all())
 
     async def get_todays_stats(self) -> list[WeatherStats]:
         today = date.today()
-        stmt = (
-            select(WeatherStats)
-            .where(WeatherStats.date== today)
-            .order_by(WeatherStats.station_id)
-        )
-        result = await self.session.execute(stmt)
-        return result.scalars().all()
+
+        statement = select(WeatherStats).where(
+            and_(WeatherStats.date == today)
+        ).order_by(WeatherStats.station_id)
+
+        result = await self.session.execute(statement)
+
+        return list(result.scalars().all())

@@ -9,4 +9,5 @@ dependencies = [
     "uvicorn",
     "slowapi",
     "aiosqlite",
+    "fastapi-filter",
 ]

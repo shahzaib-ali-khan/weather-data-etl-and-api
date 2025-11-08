@@ -1,7 +1,8 @@
-from typing import List
+from typing import List, Optional
 
 import structlog
 
+from packages.app.api.v1.filters.weather import WeatherFilter
 from packages.app.repositories.weather import WeatherRepository
 from packages.app.schemas.weather import WeatherStatsResponse, WeatherListResponse
 from packages.etl.model import Weather, WeatherStats
@@ -23,8 +24,8 @@ class WeatherService:
 
         return stations
 
-    async def get_todays_weather(self, station_id: str) -> List[Weather]:
-        weather = await self.weather_repository.get_todays_weather(station_id)
+    async def get_todays_weather(self, station_id: str, weather_filter: Optional[WeatherFilter] = None) -> List[Weather]:
+        weather = await self.weather_repository.get_todays_weather(station_id, weather_filter)
 
         return weather
 

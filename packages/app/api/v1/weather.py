@@ -1,8 +1,10 @@
 from typing import Annotated, List, Dict
 
 from fastapi import APIRouter, Depends
+from fastapi_filter import FilterDepends
 
 from packages.app.api.dependencies.weather import get_weather_service
+from packages.app.api.v1.filters.weather import WeatherFilter
 from packages.app.schemas.weather import WeatherResponse, WeatherStatsResponse, WeatherListResponse, \
     WeatherStatsListResponse
 from packages.app.services.weather import WeatherService
@@ -22,8 +24,9 @@ async def list_stations(
 async def today(
     station_id: str,
     weather_service: Annotated[WeatherService, Depends(get_weather_service)],
+    weather_filter: WeatherFilter = FilterDepends(WeatherFilter),
 ) -> WeatherListResponse:
-    weather_data_list = await weather_service.get_todays_weather(station_id)
+    weather_data_list = await weather_service.get_todays_weather(station_id, weather_filter)
 
     weather_data = [
         WeatherResponse(
