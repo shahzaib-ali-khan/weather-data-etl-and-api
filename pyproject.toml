@@ -19,10 +19,24 @@ members = ["packages/etl", "packages/app"]
 
 [dependency-groups]
 dev = [
-    "ruff",
-    "isort"
+    "ruff>=0.0.313",
+    "isort>=5.12",
+    "pytest>=8.2,<9",
+    "pytest-cov>=4.1",
+    "pytest-asyncio>=0.24.0",
+    "httpx>=0.24",
 ]
 
 [tool.ruff]
 line-length = 125
 lint.select = ["E", "F", "I", "B", "ANN"]
+
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = [
+    "tests.py",
+    "test_*.py",
+    "*_tests.py",
+]
+pythonpath = ["."]
