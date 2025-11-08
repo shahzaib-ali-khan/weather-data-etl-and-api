@@ -8,9 +8,7 @@ logger = structlog.get_logger(__name__)
 
 
 class ThirdPartyAPI:
-    def __init__(
-        self, max_retries: int = 3, base_backoff: int = 2, timeout: int = 10
-    ) -> None:
+    def __init__(self, max_retries: int = 3, base_backoff: int = 2, timeout: int = 10) -> None:
         self.max_retries = max_retries
         self.base_backoff = base_backoff
         self.timeout = timeout
@@ -35,9 +33,7 @@ class ThirdPartyAPI:
                 return response
             except RequestException as exc:
                 wait_time = 2**retries
-                logger.error(
-                    f"Error fetching {url}: {exc}. Retry {retries + 1}/{self.max_retries} in {wait_time}s"
-                )
+                logger.error(f"Error fetching {url}: {exc}. Retry {retries + 1}/{self.max_retries} in {wait_time}s")
                 time.sleep(wait_time)
             except ValueError as exc:
                 logger.error(f"Value error in {url}: {exc}")
