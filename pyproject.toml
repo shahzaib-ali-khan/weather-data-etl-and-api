@@ -1,27 +1,27 @@
 [project]
 name = "weather-app"
 version = "0.1.0"
-description = "Weather app that contains ETL to scrap data from DWD Server and FastAPI for exposing them"
+description = "Weather app that scrapes DWD data and serves it via FastAPI."
 readme = "README.md"
 requires-python = ">=3.13"
+authors = [{ name = "Shahzaib Ali Khan" }]
+license = { text = "MIT" }
 
 dependencies = [
     "python-dotenv",
     "structlog",
     "sqlalchemy",
-    "psycopg2",
-    "app",
-    "etl"
+    "psycopg2"
 ]
 
 [tool.uv.workspace]
 members = ["packages/etl", "packages/app"]
-
-[tool.ruff]
-line-length = 125
 
 [dependency-groups]
 dev = [
     "ruff",
     "isort"
 ]
+
+[tool.ruff]
+line-length = 125

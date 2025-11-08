@@ -10,8 +10,8 @@ from slowapi.middleware import SlowAPIMiddleware
 from slowapi.util import get_remote_address
 from starlette.types import ExceptionHandler
 
-from app.api.v1.router import api_router
-from app.config import settings
+from packages.app.api.v1.router import api_router
+from packages.app.config import settings
 
 
 def create_application() -> FastAPI:

@@ -4,7 +4,7 @@ from typing import Optional
 from sqlalchemy.ext.asyncio import (AsyncSession, async_sessionmaker,
                                     create_async_engine)
 
-from app.config import settings
+from packages.app.config import settings
 
 
 class DatabaseManager:
@@ -20,11 +20,11 @@ class DatabaseManager:
     def __init__(self) -> None:
         if not hasattr(self, "engine"):
             self.engine = create_async_engine(
-                settings.DATABASE_URL,
+                settings.APP_DATABASE_URL,
                 echo=settings.DEBUG,
                 future=True,
                 connect_args={"check_same_thread": False}
-                if "sqlite" in settings.DATABASE_URL
+                if "sqlite" in settings.APP_DATABASE_URL
                 else {},
             )
 
