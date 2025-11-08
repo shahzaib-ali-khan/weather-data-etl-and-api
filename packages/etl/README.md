@@ -36,7 +36,7 @@ uv pip install .
 
 4. Create .env file in project root:
 ```sh
-DATABASE_URL=postgresql://user:password@localhost:5432/dbname
+ETL_DATABASE_URL=postgresql://user:password@localhost:5432/dbname
 REDIS_HOST=localhost
 REDIS_PORT=6379
 REDIS_DB=0
@@ -47,8 +47,10 @@ CELERY_TIMEZONE=UTC
 ## Running the Pipeline
 
 ### Manual Execution
+
+From the root directory of the project
 ```sh
-python -m etl.main
+python -m packages.etl.main
 ```
 
 ### Scheduled Execution
