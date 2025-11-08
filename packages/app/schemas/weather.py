@@ -1,7 +1,7 @@
 from datetime import date, time
 from typing import Optional, Union
 
-from pydantic import BaseModel, field_validator
+from pydantic import ConfigDict, BaseModel, field_validator
 
 
 class WeatherResponse(BaseModel):
@@ -13,6 +13,8 @@ class WeatherResponse(BaseModel):
     humidity: Optional[int] = None
     wind_speed: Optional[float] = None
     wind_direction: Optional[int] = None
+
+    model_config = ConfigDict(from_attributes=True)
 
     @field_validator("date", mode="before")
     @classmethod
@@ -28,9 +30,6 @@ class WeatherResponse(BaseModel):
             return None
         return v
 
-    class Config:
-        from_attributes = True
-
 
 class WeatherListResponse(BaseModel):
     result: list[WeatherResponse]
@@ -43,8 +42,7 @@ class WeatherStatsResponse(BaseModel):
     min: float
     max: float
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class WeatherStatsListResponse(BaseModel):
