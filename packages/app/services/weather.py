@@ -23,7 +23,9 @@ class WeatherService:
 
         return stations
 
-    async def get_todays_weather(self, station_id: str, page, page_size, weather_filter: Optional[WeatherFilter] = None) -> Tuple[List[Weather], int]:
+    async def get_todays_weather(
+        self, station_id: str, page, page_size, weather_filter: Optional[WeatherFilter] = None
+    ) -> Tuple[List[Weather], int]:
         weather = await self.weather_repository.get_todays_weather(station_id, page, page_size, weather_filter)
         total_rows = await self.weather_repository.get_total_todays_weather_count(station_id)
 

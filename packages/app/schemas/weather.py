@@ -1,7 +1,7 @@
 from datetime import date, time
 from typing import Optional, Union
 
-from pydantic import ConfigDict, BaseModel, field_validator
+from pydantic import BaseModel, ConfigDict, field_validator
 
 
 class WeatherResponse(BaseModel):

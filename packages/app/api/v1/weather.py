@@ -6,7 +6,9 @@ from fastapi_filter import FilterDepends
 
 from packages.app.api.dependencies.weather import get_weather_service
 from packages.app.api.v1.filters.weather import WeatherFilter
-from packages.app.schemas.weather import WeatherListResponse, WeatherResponse, WeatherStatsListResponse, WeatherStatsResponse
+from packages.app.schemas.weather import (WeatherListResponse, WeatherResponse,
+                                          WeatherStatsListResponse,
+                                          WeatherStatsResponse)
 from packages.app.services.weather import WeatherService
 
 router = APIRouter(prefix="/weather", tags=["Weather"])

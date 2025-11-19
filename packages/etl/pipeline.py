@@ -9,14 +9,9 @@ from bs4 import BeautifulSoup
 
 from .api_client import DWDClient
 from .database import create_db_engine
-from .util import (
-    clean_column,
-    download_files,
-    extract_station_id_from_second_row,
-    filter_dataframe_columns,
-    rename_columns,
-    stats_df,
-)
+from .util import (clean_column, download_files,
+                   extract_station_id_from_second_row,
+                   filter_dataframe_columns, rename_columns, stats_df)
 
 logger = structlog.get_logger(__name__)
 
