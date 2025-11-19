@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import structlog
 
@@ -23,10 +23,11 @@ class WeatherService:
 
         return stations
 
-    async def get_todays_weather(self, station_id: str, weather_filter: Optional[WeatherFilter] = None) -> List[Weather]:
-        weather = await self.weather_repository.get_todays_weather(station_id, weather_filter)
+    async def get_todays_weather(self, station_id: str, page, page_size, weather_filter: Optional[WeatherFilter] = None) -> Tuple[List[Weather], int]:
+        weather = await self.weather_repository.get_todays_weather(station_id, page, page_size, weather_filter)
+        total_rows = await self.weather_repository.get_total_todays_weather_count(station_id)
 
-        return weather
+        return weather, total_rows
 
     async def get_todays_weather_stats(self) -> List[WeatherStats]:
         stats = await self.weather_repository.get_todays_stats()

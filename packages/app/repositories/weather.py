@@ -1,7 +1,7 @@
 from datetime import date
 from typing import Optional
 
-from sqlalchemy import and_, distinct, select
+from sqlalchemy import and_, distinct, select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from packages.app.api.v1.filters.weather import WeatherFilter
@@ -17,18 +17,35 @@ class WeatherRepository:
         result = await self.session.execute(stmt)
         return [row[0] for row in result.all()]
 
-    async def get_todays_weather(self, station_id: str, weather_filter: Optional[WeatherFilter] = None) -> list[Weather]:
+    async def get_total_todays_weather_count(self, station_id: str) -> int:
         today = date.today()
-        statement = (
-            select(Weather).where(and_(Weather.date == today, Weather.station_id == station_id)).order_by(Weather.time_utc)
+        count_stmt = select(func.count()).select_from(Weather).where(Weather.date == today, Weather.station_id == station_id)
+
+        result = await self.session.execute(count_stmt)
+        total = result.scalar_one()
+
+        return int(total)
+
+    async def get_todays_weather(
+        self, station_id: str, page: int, page_size: int, weather_filter: Optional[WeatherFilter] = None
+    ) -> list[Weather]:
+        skip = (page - 1) * page_size
+        today = date.today()
+
+        query = (
+            select(Weather)
+            .where(and_(Weather.date == today, Weather.station_id == station_id))
+            .order_by(Weather.time_utc)
+            .offset(skip)
+            .limit(page_size)
         )
 
         if weather_filter:
-            statement = weather_filter.filter(statement)
+            query = weather_filter.filter(query)
 
-        result = await self.session.execute(statement)
+        result = await self.session.execute(query)
 
-        return list(result.scalars().all())
+        return result.scalars().all()
 
     async def get_todays_stats(self) -> list[WeatherStats]:
         today = date.today()

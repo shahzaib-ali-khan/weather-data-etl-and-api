@@ -1,6 +1,7 @@
+from math import ceil
 from typing import Annotated, Dict, List
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from fastapi_filter import FilterDepends
 
 from packages.app.api.dependencies.weather import get_weather_service
@@ -24,8 +25,10 @@ async def today(
     station_id: str,
     weather_service: Annotated[WeatherService, Depends(get_weather_service)],
     weather_filter: WeatherFilter = FilterDepends(WeatherFilter),
+    page: int = Query(1, ge=1, description="Page number"),
+    page_size: int = Query(20, ge=1, le=100, description="Items per page"),
 ) -> WeatherListResponse:
-    weather_data_list = await weather_service.get_todays_weather(station_id, weather_filter)
+    weather_data_list, total_rows = await weather_service.get_todays_weather(station_id, page, page_size, weather_filter)
 
     weather_data = [
         WeatherResponse(
@@ -41,7 +44,13 @@ async def today(
         for weather in weather_data_list
     ]
 
-    return WeatherListResponse(result=weather_data)
+    return WeatherListResponse(
+        result=weather_data,
+        total=total_rows,
+        page=page,
+        page_size=page_size,
+        total_pages=ceil(total_rows / page_size) if total_rows > 0 else 0,
+    )
 
 
 @router.get("/today/stats", response_model=WeatherStatsListResponse, summary="Get today's weather stats per station")

@@ -33,6 +33,10 @@ class WeatherResponse(BaseModel):
 
 class WeatherListResponse(BaseModel):
     result: list[WeatherResponse]
+    total: int
+    page: int
+    page_size: int
+    total_pages: int
 
 
 class WeatherStatsResponse(BaseModel):
